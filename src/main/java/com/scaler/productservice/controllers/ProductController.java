@@ -3,6 +3,8 @@ package com.scaler.productservice.controllers;
 import com.scaler.productservice.models.Product;
 import com.scaler.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class ProductController {
 
     @PatchMapping("/{id}")
     public Product updateProduct(@PathVariable("id") Long id, @RequestBody Product product){
-        return productService.updateProduct(product);
+        return productService.updateProduct(id, product);
     }
 
     @PutMapping("/id")
@@ -46,7 +48,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable("id") Long id){
-        return;
+    public ResponseEntity<Product> deleteProduct(@PathVariable("id") Long id){
+        Product product = productService.deleteProduct(id);
+        return new ResponseEntity<>(product,HttpStatus.OK);
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Product>> getProductsInCategory(@PathVariable("category") String category){
+        List<Product> productsInCategory = productService.getProductsInCategory(category);
+        return new ResponseEntity<>(productsInCategory,HttpStatus.OK);
     }
 }

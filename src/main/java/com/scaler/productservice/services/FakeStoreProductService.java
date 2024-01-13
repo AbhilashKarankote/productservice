@@ -3,6 +3,7 @@ package com.scaler.productservice.services;
 import com.scaler.productservice.dtos.FakeStoreProductDto;
 import com.scaler.productservice.models.Category;
 import com.scaler.productservice.models.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -10,9 +11,11 @@ import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+@Slf4j
 @Service
 public class FakeStoreProductService implements ProductService{
 
@@ -65,12 +68,12 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public Product updateProduct(Product product) {
-
-        RequestCallback requestCallback = restTemplate.httpEntityCallback(new FakeStoreProductDto(), FakeStoreProductDto.class);
+    public Product updateProduct(Long id, Product product) {
+        log.info("product id: {}",id);
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(convertProductToFakeStoreProduct(product), FakeStoreProductDto.class);
         HttpMessageConverterExtractor<FakeStoreProductDto> responseExtractor =
                 new HttpMessageConverterExtractor<>(FakeStoreProductDto.class, restTemplate.getMessageConverters());
-        FakeStoreProductDto fakeStoreProductDto = restTemplate.execute("https://fakestoreapi.com/products/" + product.getId(), HttpMethod.POST, requestCallback, responseExtractor);
+        FakeStoreProductDto fakeStoreProductDto = restTemplate.execute("https://fakestoreapi.com/products/" +id, HttpMethod.PUT, requestCallback, responseExtractor);
         return convertFakeStoreProductToProduct(fakeStoreProductDto);
     }
 
@@ -78,5 +81,23 @@ public class FakeStoreProductService implements ProductService{
     public List<Product> getAllProducts() {
         FakeStoreProductDto[] response = restTemplate.getForObject("https://fakestoreapi.com/products", FakeStoreProductDto[].class);
         return Stream.of(response).map(this::convertFakeStoreProductToProduct).toList();
+    }
+
+    @Override
+    public Product deleteProduct(Long id) {
+        log.info("product id: {}",id);
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(new FakeStoreProductDto(), FakeStoreProductDto.class);
+        HttpMessageConverterExtractor<FakeStoreProductDto> responseExtractor =
+                new HttpMessageConverterExtractor<>(FakeStoreProductDto.class, restTemplate.getMessageConverters());
+        FakeStoreProductDto fakeStoreProductDto = restTemplate.execute("https://fakestoreapi.com/products/" +id, HttpMethod.DELETE, requestCallback, responseExtractor);
+        return convertFakeStoreProductToProduct(fakeStoreProductDto);
+    }
+
+    @Override
+    public List<Product> getProductsInCategory(String category) {
+        log.info("category : {}",category);
+        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject("https://fakestoreapi.com/products/category/" + category, FakeStoreProductDto[].class);
+        assert fakeStoreProductDtos != null;
+        return Arrays.stream(fakeStoreProductDtos).map(this::convertFakeStoreProductToProduct).toList();
     }
 }
