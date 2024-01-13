@@ -1,6 +1,7 @@
 package com.scaler.productservice.services;
 
 import com.scaler.productservice.dtos.FakeStoreProductDto;
+import com.scaler.productservice.exceptions.ProductNotFoundException;
 import com.scaler.productservice.models.Category;
 import com.scaler.productservice.models.Product;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +41,14 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public Product getSingleProduct(Long id) {
+    public Product getSingleProduct(Long id) throws ProductNotFoundException {
         FakeStoreProductDto fakeStoreProductDto = restTemplate.getForObject(
                 "https://fakestoreapi.com/products/" + id,
                 FakeStoreProductDto.class
         );
+        if(fakeStoreProductDto == null){
+            throw new ProductNotFoundException("Product with id: "+id+" doesn't exist");
+        }
         return convertFakeStoreProductToProduct(fakeStoreProductDto);
     }
 

@@ -1,5 +1,6 @@
 package com.scaler.productservice.controllers;
 
+import com.scaler.productservice.exceptions.ProductNotFoundException;
 import com.scaler.productservice.models.Product;
 import com.scaler.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Product getProduct(@PathVariable("id") Long id){
+    public Product getProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
         return productService.getSingleProduct(id);
     }
 
