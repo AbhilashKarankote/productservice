@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Slf4j
-@Service
+@Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService{
 
     private RestTemplate restTemplate;

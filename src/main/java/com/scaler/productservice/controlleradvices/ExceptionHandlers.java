@@ -19,6 +19,7 @@ public class ExceptionHandlers {
     public ResponseEntity<ExceptionDto> handleProductNotFoundException(ProductNotFoundException exception){
         ExceptionDto exceptionDto = new ExceptionDto();
         exceptionDto.setMessage(exception.getMessage());
-        return new ResponseEntity<>(exceptionDto,HttpStatus.OK);
+        return new ResponseEntity<>(exceptionDto,
+                HttpStatus.OK);
     }
 }
