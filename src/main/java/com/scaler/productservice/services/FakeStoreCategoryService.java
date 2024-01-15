@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service("fakeStoreCategoryService")
 public class FakeStoreCategoryService implements CategoryService{
@@ -27,5 +28,20 @@ public class FakeStoreCategoryService implements CategoryService{
             category.setName(c);
             return category;
         }).toList();
+    }
+
+    @Override
+    public boolean isCategoryExists(String categoryName) {
+        return false;
+    }
+
+    @Override
+    public Optional<Category> getCategoryByName(String categoryName) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Category createCategory(Category category) {
+        return null;
     }
 }

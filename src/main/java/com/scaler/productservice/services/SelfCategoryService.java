@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("selfCategoryService")
 public class SelfCategoryService implements CategoryService {
@@ -20,4 +21,20 @@ public class SelfCategoryService implements CategoryService {
     public List<Category> getAllCategories() {
         return null;
     }
+
+    @Override
+    public boolean isCategoryExists(String categoryName) {
+        return categoryRepository.existsByName(categoryName);
+    }
+
+    @Override
+    public Optional<Category> getCategoryByName(String categoryName) {
+        return categoryRepository.findByName(categoryName);
+    }
+
+    @Override
+    public Category createCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
 }
